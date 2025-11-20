@@ -130,7 +130,7 @@ export default function Hero() {
         {/* Floating ROI badges */}
         {metrics.map((m, i) => (
           <motion.div
-            key={`metric-${i}`]
+            key={`metric-${i}`}
             animate={{ opacity: 1, y: [6, -6, 6] }}
             transition={{ duration: 3 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
             style={{ transform: `translate(${m.x}px, ${m.y}px)` }}
