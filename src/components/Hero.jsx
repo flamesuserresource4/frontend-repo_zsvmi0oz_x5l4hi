@@ -177,54 +177,59 @@ export default function Hero() {
 // Components
 function CloverGlass() {
   return (
-    <div className="relative z-10 w-52 h-52">
+    <div className="relative z-10 w-56 h-56">
       {/* Outer bloom */}
       <div className="absolute inset-[-18%] rounded-full blur-3xl bg-emerald-400/25" />
 
-      {/* 3D glass petals */}
-      <svg viewBox="-100 -100 200 200" className="relative w-full h-full drop-shadow-[0_0_90px_rgba(16,185,129,0.6)]">
+      {/* Four-leaf clover (clear 4 hojas + pequeño tallo) */}
+      <svg viewBox="-120 -120 240 240" className="relative w-full h-full drop-shadow-[0_0_90px_rgba(16,185,129,0.6)]">
+        <defs>
+          <radialGradient id="petal-grad" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
+            <stop offset="55%" stopColor="#10b981" stopOpacity="0.65" />
+            <stop offset="100%" stopColor="#0f766e" stopOpacity="0.25" />
+          </radialGradient>
+          <linearGradient id="petal-gloss" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+            <stop offset="35%" stopColor="#ffffff" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+          <filter id="glass-soft">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" />
+          </filter>
+        </defs>
+
         {Array.from({ length: 4 }).map((_, i) => (
-          <g key={i} transform={`rotate(${i * 90})`}>
-            <defs>
-              <radialGradient id={`petal-grad-${i}`} cx="50%" cy="50%" r="70%">
-                <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
-                <stop offset="55%" stopColor="#10b981" stopOpacity="0.65" />
-                <stop offset="100%" stopColor="#0f766e" stopOpacity="0.3" />
-              </radialGradient>
-              <linearGradient id={`gloss-${i}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
-                <stop offset="35%" stopColor="#ffffff" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            {/* Petal shape: a rounded heart-like glass */}
+          <g key={i} transform={`rotate(${i * 90}) translate(0,-46)`}>
+            {/* Petal heart shape oriented outwards */}
             <path
-              d="M0,-12 C-26,-36 -58,-6 -40,20 C-18,52 18,52 40,20 C58,-6 26,-36 0,-12 Z"
-              fill={`url(#petal-grad-${i})`}
+              d="M0,-28 C14,-52 48,-40 40,-14 C34,8 10,18 0,30 C-10,18 -34,8 -40,-14 C-48,-40 -14,-52 0,-28 Z"
+              fill="url(#petal-grad)"
               stroke="#34d399"
-              strokeOpacity="0.35"
+              strokeOpacity="0.45"
               strokeWidth="1.5"
-              filter="url(#glass-blur)"
+              filter="url(#glass-soft)"
             />
-            {/* Gloss highlight */}
+            {/* Gloss */}
             <path
-              d="M-6,-14 C-24,-30 -47,-6 -32,14 C-18,34 8,38 24,18 C34,6 20,-10 -6,-14 Z"
-              fill={`url(#gloss-${i})`}
+              d="M-6,-24 C-18,-40 -36,-18 -28,0 C-18,18 6,18 18,6 C26,-2 12,-18 -6,-24 Z"
+              fill="url(#petal-gloss)"
+              opacity="0.9"
             />
           </g>
         ))}
-        {/* Center gem */}
+
+        {/* Small stem */}
+        <path d="M4,34 C22,58 8,80 -8,96" stroke="#34d399" strokeOpacity="0.6" strokeWidth="4" fill="none" />
+        <path d="M4,34 C18,54 10,72 -2,86" stroke="#a7f3d0" strokeOpacity="0.5" strokeWidth="2" fill="none" />
+
+        {/* Center gem and rim */}
         <circle cx="0" cy="0" r="10" fill="#a7f3d0" opacity="0.85" />
+        <radialGradient id="center-gloss" cx="50%" cy="50%" r="70%">
+          <stop offset="0%" stopColor="#ecfeff" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#34d399" stopOpacity="0.4" />
+        </radialGradient>
         <circle cx="0" cy="0" r="10" fill="url(#center-gloss)" />
-        <defs>
-          <radialGradient id="center-gloss" cx="50%" cy="50%" r="70%">
-            <stop offset="0%" stopColor="#ecfeff" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#34d399" stopOpacity="0.4" />
-          </radialGradient>
-          <filter id="glass-blur">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="0.2" />
-          </filter>
-        </defs>
       </svg>
 
       {/* Glass rim and inner pulse */}
