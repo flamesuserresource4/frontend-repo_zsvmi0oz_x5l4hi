@@ -1,39 +1,19 @@
 import { motion } from 'framer-motion'
-import { Clover } from 'lucide-react'
 
-// Variants
-const pulseRing = {
-  animate: {
-    scale: [0.9, 1.6],
-    opacity: [0.35, 0],
-    transition: { duration: 2.2, repeat: Infinity, ease: 'easeOut' }
-  }
-}
+// Smooth infinite loop helpers
+const loopRotate = (duration = 36, reverse = false) => ({
+  rotate: reverse ? [0, -360] : [0, 360],
+  transition: { duration, ease: 'linear', repeat: Infinity }
+})
 
-const coinOrbit = {
-  float: (i) => ({
-    rotate: [0, 360],
-    y: [0, -10, 0],
-    transition: {
-      rotate: { duration: 9 + i * 0.4, repeat: Infinity, ease: 'linear' },
-      y: { duration: 3 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }
-    }
-  })
-}
+const floatY = (amp = 10, duration = 3.6, delay = 0) => ({
+  y: [0, -amp, 0, amp, 0],
+  transition: { duration, ease: 'easeInOut', repeat: Infinity, delay }
+})
 
 export default function Hero() {
-  // Precomputed elements
-  const coins = Array.from({ length: 12 }).map((_, i) => ({
-    size: 20 + (i % 4) * 6,
-    distance: 130 + (i % 6) * 16,
-    angle: (i / 12) * Math.PI * 2,
-  }))
-
-  // Luck burst particles (simulate "multiplying" coins shooting out and reappearing)
-  const bursts = Array.from({ length: 14 }).map((_, i) => ({
-    delay: i * 0.25,
-    angle: (i / 14) * Math.PI * 2,
-  }))
+  const ring1Coins = 10
+  const ring2Coins = 14
 
   const metrics = [
     { label: '+237% ROAS', x: -220, y: -40 },
@@ -44,11 +24,11 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-[92vh] w-full overflow-hidden bg-black" id="inicio">
-      {/* Clean, brand background */}
+      {/* Background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-b from-black via-emerald-950/20 to-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.18)_0%,rgba(0,0,0,0)_55%)]" />
-        {/* Subtle grid depth */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.20)_0%,rgba(0,0,0,0)_55%)]" />
+        {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.06] pointer-events-none"
           style={{
@@ -59,94 +39,103 @@ export default function Hero() {
         />
       </div>
 
-      {/* Rotating luck rays behind the clover */}
+      {/* Luck rays */}
       <motion.div
         aria-hidden
-        initial={{ rotate: 0 }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[52rem] h-[52rem] rounded-full"
+        animate={loopRotate(48)}
+        className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[60rem] h-[60rem] rounded-full"
         style={{
           background:
-            'conic-gradient(from 0deg, rgba(250,204,21,0.12), rgba(16,185,129,0.0) 12deg, rgba(16,185,129,0) 45deg)'
+            'conic-gradient(from 0deg, rgba(250,204,21,0.12), rgba(16,185,129,0.0) 10deg, rgba(16,185,129,0) 45deg)'
         }}
       />
 
-      {/* Centerpiece: clover emits wealth */}
+      {/* Center stage */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {/* Soft inner glow ring */}
-        <div className="absolute w-[30rem] h-[30rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.22),transparent_65%)] blur-2xl" />
-        <div className="absolute w-[38rem] h-[38rem] rounded-full border border-emerald-400/20" />
+        {/* Glow core */}
+        <div className="absolute w-[36rem] h-[36rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.25),transparent_65%)] blur-2xl" />
+        <div className="absolute w-[44rem] h-[44rem] rounded-full border border-emerald-400/15" />
 
-        {/* Pulsing luck ring (suggests compounding) */}
+        {/* Pulsing ring (soft, never disappears) */}
         <motion.div
-          variants={pulseRing}
-          animate="animate"
-          className="absolute w-80 h-80 rounded-full ring-2 ring-amber-300/40"
+          className="absolute w-[24rem] h-[24rem] rounded-full ring-1 ring-amber-300/35"
+          animate={{ scale: [0.95, 1.2, 0.95] }}
+          transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Clover */}
+        {/* Glass neon 3D clover */}
+        <CloverGlass />
+
+        {/* Orbit system: two persistent rings (gives sense of multiplication without popping) */}
         <motion.div
-          initial={{ scale: 0.92, opacity: 0 }}
-          animate={{ scale: [0.96, 1.02, 0.98, 1.01], opacity: 1 }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-10 w-44 h-44 rounded-3xl grid place-items-center bg-gradient-to-br from-emerald-400 to-lime-400 shadow-[0_0_90px_rgba(16,185,129,0.6)] ring-4 ring-emerald-400/30"
+          className="absolute"
+          style={{ width: 0, height: 0 }}
+          animate={loopRotate(28)}
         >
-          <Clover className="w-20 h-20 text-black drop-shadow-[0_0_14px_rgba(0,0,0,0.25)]" />
-          <span className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-amber-300/60" />
+          {[...Array(ring1Coins)].map((_, i) => {
+            const angle = (i / ring1Coins) * Math.PI * 2
+            const r = 170
+            const delay = (i / ring1Coins) * 0.4
+            return (
+              <motion.div
+                key={`r1-${i}`}
+                className="absolute rounded-full shadow-[0_0_20px_rgba(245,158,11,0.55)] ring-2 ring-amber-300/70"
+                style={{
+                  width: 18,
+                  height: 18,
+                  left: Math.cos(angle) * r,
+                  top: Math.sin(angle) * r,
+                  background:
+                    'linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #d97706 100%)'
+                }}
+                animate={floatY(8, 3.2, delay)}
+              >
+                <span className="absolute left-1 top-1 w-1.5 h-1.5 rounded-full bg-white/80 blur-[1px]" />
+              </motion.div>
+            )
+          })}
         </motion.div>
 
-        {/* Orbit coins (steady compounding) */}
-        {coins.map((c, i) => (
-          <motion.div
-            key={`orbit-${i}`}
-            custom={i}
-            variants={coinOrbit}
-            animate="float"
-            style={{
-              width: c.size,
-              height: c.size,
-              transform: `translate(${Math.cos(c.angle) * c.distance}px, ${Math.sin(c.angle) * c.distance}px)`
-            }}
-            className="absolute rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-amber-500 shadow-[0_0_25px_rgba(245,158,11,0.55)] ring-2 ring-amber-300/70"
-          >
-            <span className="absolute left-1 top-1 w-2 h-2 rounded-full bg-white/70 blur-[1px]" />
-          </motion.div>
-        ))}
+        {/* Second ring: slower, larger radius, staggered entry that eases in once then stays */}
+        <motion.div className="absolute" style={{ width: 0, height: 0 }} animate={loopRotate(42, true)}>
+          {[...Array(ring2Coins)].map((_, i) => {
+            const angle = (i / ring2Coins) * Math.PI * 2
+            const r = 230
+            const delay = 0.6 + (i / ring2Coins) * 0.6
+            return (
+              <motion.div
+                key={`r2-${i}`}
+                className="absolute rounded-full shadow-[0_0_24px_rgba(245,158,11,0.55)] ring-[2px] ring-amber-200/70"
+                style={{
+                  width: 14,
+                  height: 14,
+                  left: Math.cos(angle) * r,
+                  top: Math.sin(angle) * r,
+                  background:
+                    'linear-gradient(135deg, #fef08a 0%, #fbbf24 55%, #b45309 100%)'
+                }}
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1.2, ease: 'easeOut', delay }}
+              >
+                <motion.span className="absolute left-1 top-1 w-1.5 h-1.5 rounded-full bg-white/80 blur-[1px]" animate={floatY(6, 2.8, i * 0.08)} />
+              </motion.div>
+            )
+          })}
+        </motion.div>
 
-        {/* Luck burst coins (multiplication moment) */}
-        {bursts.map((b, i) => (
-          <motion.span
-            key={`burst-${i}`}
-            initial={{ opacity: 0, scale: 0.4, x: 0, y: 0 }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0.6, 1],
-              x: [0, Math.cos(b.angle) * 220],
-              y: [0, Math.sin(b.angle) * 220]
-            }}
-            transition={{
-              delay: 0.8 + b.delay,
-              duration: 2.4,
-              repeat: Infinity,
-              repeatDelay: 2.2,
-              ease: 'easeOut'
-            }}
-            className="absolute block w-3 h-3 rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-amber-500 shadow-[0_0_18px_rgba(245,158,11,0.6)]"
-          />
-        ))}
+        {/* Soft gold dust trail along an inner arc (always present, no popping) */}
+        <GoldDustArc />
 
-        {/* Floating ROI badges (signals of growth) */}
+        {/* Floating ROI badges */}
         {metrics.map((m, i) => (
           <motion.div
-            key={`metric-${i}`}
-            initial={{ opacity: 0, y: 10 }}
+            key={`metric-${i}`]
             animate={{ opacity: 1, y: [6, -6, 6] }}
             transition={{ duration: 3 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
             style={{ transform: `translate(${m.x}px, ${m.y}px)` }}
             className="absolute px-3 py-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 text-sm backdrop-blur-sm shadow-[0_0_16px_rgba(16,185,129,0.35)]"
           >
-            {/* subtle glint */}
             <span className="absolute -inset-px rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-40" />
             <span className="relative font-semibold">{m.label}</span>
           </motion.div>
@@ -182,5 +171,102 @@ export default function Hero() {
         </motion.div>
       </div>
     </section>
+  )
+}
+
+// Components
+function CloverGlass() {
+  return (
+    <div className="relative z-10 w-52 h-52">
+      {/* Outer bloom */}
+      <div className="absolute inset-[-18%] rounded-full blur-3xl bg-emerald-400/25" />
+
+      {/* 3D glass petals */}
+      <svg viewBox="-100 -100 200 200" className="relative w-full h-full drop-shadow-[0_0_90px_rgba(16,185,129,0.6)]">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <g key={i} transform={`rotate(${i * 90})`}>
+            <defs>
+              <radialGradient id={`petal-grad-${i}`} cx="50%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
+                <stop offset="55%" stopColor="#10b981" stopOpacity="0.65" />
+                <stop offset="100%" stopColor="#0f766e" stopOpacity="0.3" />
+              </radialGradient>
+              <linearGradient id={`gloss-${i}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+                <stop offset="35%" stopColor="#ffffff" stopOpacity="0.12" />
+                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Petal shape: a rounded heart-like glass */}
+            <path
+              d="M0,-12 C-26,-36 -58,-6 -40,20 C-18,52 18,52 40,20 C58,-6 26,-36 0,-12 Z"
+              fill={`url(#petal-grad-${i})`}
+              stroke="#34d399"
+              strokeOpacity="0.35"
+              strokeWidth="1.5"
+              filter="url(#glass-blur)"
+            />
+            {/* Gloss highlight */}
+            <path
+              d="M-6,-14 C-24,-30 -47,-6 -32,14 C-18,34 8,38 24,18 C34,6 20,-10 -6,-14 Z"
+              fill={`url(#gloss-${i})`}
+            />
+          </g>
+        ))}
+        {/* Center gem */}
+        <circle cx="0" cy="0" r="10" fill="#a7f3d0" opacity="0.85" />
+        <circle cx="0" cy="0" r="10" fill="url(#center-gloss)" />
+        <defs>
+          <radialGradient id="center-gloss" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#ecfeff" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#34d399" stopOpacity="0.4" />
+          </radialGradient>
+          <filter id="glass-blur">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0.2" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Glass rim and inner pulse */}
+      <motion.span
+        className="pointer-events-none absolute inset-0 rounded-[28px] ring-2 ring-emerald-300/30"
+        animate={{ boxShadow: [
+          '0 0 60px rgba(16,185,129,0.35)',
+          '0 0 90px rgba(16,185,129,0.55)',
+          '0 0 60px rgba(16,185,129,0.35)'
+        ] }}
+        transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
+      />
+    </div>
+  )
+}
+
+function GoldDustArc() {
+  const dots = 36
+  const r = 120
+  return (
+    <div className="absolute" style={{ width: 0, height: 0 }}>
+      {[...Array(dots)].map((_, i) => {
+        const angle = (i / dots) * Math.PI * 2 * 0.65 - Math.PI * 0.2 // partial arc
+        const x = Math.cos(angle) * r
+        const y = Math.sin(angle) * r
+        return (
+          <motion.span
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              left: x,
+              top: y,
+              width: 6,
+              height: 6,
+              background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(250,204,21,0.9) 50%, rgba(245,158,11,0.4) 100%)',
+              filter: 'drop-shadow(0 0 10px rgba(245,158,11,0.5))'
+            }}
+            animate={{ opacity: [0.6, 0.95, 0.6], scale: [0.9, 1.1, 0.9] }}
+            transition={{ duration: 2.2 + (i % 5) * 0.2, repeat: Infinity, ease: 'easeInOut', delay: i * 0.05 }}
+          />
+        )
+      })}
+    </div>
   )
 }
