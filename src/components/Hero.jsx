@@ -1,4 +1,3 @@
-import Spline from '@splinetool/react-spline'
 import { motion } from 'framer-motion'
 import { Clover } from 'lucide-react'
 
@@ -22,16 +21,21 @@ export default function Hero() {
   }))
 
   return (
-    <section className="relative min-h-[92vh] w-full overflow-hidden" id="inicio">
-      {/* Spline 3D background */}
+    <section className="relative min-h-[92vh] w-full overflow-hidden bg-black" id="inicio">
+      {/* Clean brand background (removed previous 3D scene) */}
       <div className="absolute inset-0">
-        <Spline scene="https://prod.spline.design/LU2mWMPbF3Qi1Qxh/scene.splinecode" style={{ width: '100%', height: '100%' }} />
+        {/* Subtle dark gradient foundation */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-emerald-950/20 to-black" />
+        {/* Soft radial glow center */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.18)_0%,rgba(0,0,0,0)_55%)]" />
+        {/* Faint grid for depth */}
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(transparent 23px, rgba(255,255,255,0.06) 24px), linear-gradient(90deg, transparent 23px, rgba(255,255,255,0.06) 24px)`,
+          backgroundSize: '24px 24px'
+        }} />
       </div>
 
-      {/* Dark overlay to ensure readable contrast */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80 pointer-events-none" />
-
-      {/* Branded 3D-like centerpiece: clover + multiplying gold coins */}
+      {/* Branded centerpiece: clover + orbiting gold coins */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {/* Glow rings */}
         <div className="absolute w-[32rem] h-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.2),transparent_60%)] blur-2xl" />
