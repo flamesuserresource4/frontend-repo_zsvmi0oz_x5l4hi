@@ -56,7 +56,7 @@ export default function Hero() {
           transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Glass neon 3D clover */}
+        {/* Glass neon 3D clover (enhanced design + animation) */}
         <CloverGlass />
 
         {/* Orbit system: two persistent rings (gives sense of multiplication without popping) */}
@@ -155,13 +155,42 @@ export default function Hero() {
 
 // Components
 function CloverGlass() {
+  // Petal animation variants
+  const petalFloat = {
+    animate: (i) => ({
+      scale: [1, 1.06, 1],
+      rotate: [0, i % 2 === 0 ? 2.2 : -2.2, 0],
+      transition: { duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }
+    })
+  }
+
   return (
-    <div className="relative z-10 w-56 h-56">
+    <motion.div
+      className="relative z-10 w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64"
+      animate={{ rotateZ: [0, 0.8, -0.8, 0], scale: [1, 1.015, 1] }}
+      transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+    >
       {/* Outer bloom */}
       <div className="absolute inset-[-18%] rounded-full blur-3xl bg-emerald-400/25" />
 
-      {/* Four-leaf clover (clear 4 hojas + pequeño tallo) */}
-      <svg viewBox="-120 -120 240 240" className="relative w-full h-full drop-shadow-[0_0_90px_rgba(16,185,129,0.6)]">
+      {/* Subtle rotating halo */}
+      <motion.div
+        className="absolute -inset-6 rounded-full"
+        style={{
+          background:
+            'conic-gradient(from 0deg, rgba(16,185,129,0.05), rgba(163,230,53,0.0) 20deg, rgba(163,230,53,0) 60deg)'
+        }}
+        animate={loopRotate(24)}
+      />
+
+      {/* Four-leaf clover (clear 4 hojas + tallo) */}
+      <motion.svg
+        viewBox="-120 -120 240 240"
+        className="relative w-full h-full drop-shadow-[0_0_90px_rgba(16,185,129,0.6)]"
+        initial={{ filter: 'brightness(1) saturate(1)' }}
+        animate={{ filter: ['brightness(1) saturate(1)', 'brightness(1.05) saturate(1.08)', 'brightness(1) saturate(1)'] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+      >
         <defs>
           <radialGradient id="petal-grad" cx="50%" cy="50%" r="70%">
             <stop offset="0%" stopColor="#34d399" stopOpacity="0.95" />
@@ -173,43 +202,71 @@ function CloverGlass() {
             <stop offset="35%" stopColor="#ffffff" stopOpacity="0.12" />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
           </linearGradient>
+          <radialGradient id="rim-light" cx="50%" cy="50%" r="65%">
+            <stop offset="0%" stopColor="#a7f3d0" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#34d399" stopOpacity="0.25" />
+          </radialGradient>
           <filter id="glass-soft">
             <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" />
+          </filter>
+          <filter id="inner-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="soft" />
+            <feMerge>
+              <feMergeNode in="soft" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
           </filter>
         </defs>
 
         {Array.from({ length: 4 }).map((_, i) => (
-          <g key={i} transform={`rotate(${i * 90}) translate(0,-46)`}>
+          <motion.g key={i} transform={`rotate(${i * 90}) translate(0,-46)`} variants={petalFloat} animate="animate" custom={i}>
             {/* Petal heart shape oriented outwards */}
             <path
               d="M0,-28 C14,-52 48,-40 40,-14 C34,8 10,18 0,30 C-10,18 -34,8 -40,-14 C-48,-40 -14,-52 0,-28 Z"
               fill="url(#petal-grad)"
               stroke="#34d399"
-              strokeOpacity="0.45"
-              strokeWidth="1.5"
+              strokeOpacity="0.5"
+              strokeWidth="1.6"
               filter="url(#glass-soft)"
+            />
+            {/* Inner rim highlight */}
+            <path
+              d="M0,-24 C10,-42 38,-34 32,-12 C28,6 8,14 0,24 C-8,14 -28,6 -32,-12 C-38,-34 -10,-42 0,-24 Z"
+              fill="url(#rim-light)"
+              opacity="0.55"
             />
             {/* Gloss */}
             <path
               d="M-6,-24 C-18,-40 -36,-18 -28,0 C-18,18 6,18 18,6 C26,-2 12,-18 -6,-24 Z"
               fill="url(#petal-gloss)"
-              opacity="0.9"
+              opacity="0.85"
             />
-          </g>
+          </motion.g>
         ))}
 
-        {/* Small stem */}
+        {/* Small stem with flowing highlight */}
         <path d="M4,34 C22,58 8,80 -8,96" stroke="#34d399" strokeOpacity="0.6" strokeWidth="4" fill="none" />
-        <path d="M4,34 C18,54 10,72 -2,86" stroke="#a7f3d0" strokeOpacity="0.5" strokeWidth="2" fill="none" />
+        <motion.path
+          d="M4,34 C18,54 10,72 -2,86"
+          stroke="#a7f3d0"
+          strokeOpacity="0.7"
+          strokeWidth="2.2"
+          fill="none"
+          strokeDasharray="6 10"
+          animate={{ strokeDashoffset: [0, -32] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: 'linear' }}
+        />
 
-        {/* Center gem and rim */}
-        <circle cx="0" cy="0" r="10" fill="#a7f3d0" opacity="0.85" />
+        {/* Center gem and rim pulse */}
+        <motion.circle cx="0" cy="0" r="11" fill="#a7f3d0" opacity="0.9" filter="url(#inner-glow)"
+          animate={{ r: [10.5, 12, 10.5] }} transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
         <radialGradient id="center-gloss" cx="50%" cy="50%" r="70%">
           <stop offset="0%" stopColor="#ecfeff" stopOpacity="0.8" />
           <stop offset="100%" stopColor="#34d399" stopOpacity="0.4" />
         </radialGradient>
-        <circle cx="0" cy="0" r="10" fill="url(#center-gloss)" />
-      </svg>
+        <circle cx="0" cy="0" r="11" fill="url(#center-gloss)" />
+      </motion.svg>
 
       {/* Glass rim and inner pulse */}
       <motion.span
@@ -221,7 +278,19 @@ function CloverGlass() {
         ] }}
         transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
       />
-    </div>
+
+      {/* Sparkle accents */}
+      <motion.span
+        className="absolute left-3 top-4 w-1.5 h-1.5 rounded-full bg-white/90"
+        animate={{ opacity: [0.4, 1, 0.4], scale: [0.9, 1.3, 0.9] }}
+        transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.span
+        className="absolute right-4 bottom-5 w-1 h-1 rounded-full bg-amber-200/90"
+        animate={{ opacity: [0.3, 0.9, 0.3], scale: [0.8, 1.2, 0.8] }}
+        transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+      />
+    </motion.div>
   )
 }
 
