@@ -15,13 +15,6 @@ export default function Hero() {
   const ring1Coins = 10
   const ring2Coins = 14
 
-  const metrics = [
-    { label: '+237% ROAS', x: -220, y: -40 },
-    { label: 'x3 LTV', x: 210, y: 30 },
-    { label: '-42% CAC', x: -120, y: 160 },
-    { label: '+78% CR', x: 140, y: -150 },
-  ]
-
   return (
     <section className="relative min-h-[92vh] w-full overflow-hidden bg-black" id="inicio">
       {/* Background */}
@@ -126,20 +119,6 @@ export default function Hero() {
 
         {/* Soft gold dust trail along an inner arc (always present, no popping) */}
         <GoldDustArc />
-
-        {/* Floating ROI badges */}
-        {metrics.map((m, i) => (
-          <motion.div
-            key={`metric-${i}`}
-            animate={{ opacity: 1, y: [6, -6, 6] }}
-            transition={{ duration: 3 + i * 0.2, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ transform: `translate(${m.x}px, ${m.y}px)` }}
-            className="absolute px-3 py-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 text-sm backdrop-blur-sm shadow-[0_0_16px_rgba(16,185,129,0.35)]"
-          >
-            <span className="absolute -inset-px rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-40" />
-            <span className="relative font-semibold">{m.label}</span>
-          </motion.div>
-        ))}
       </div>
 
       {/* Content */}
